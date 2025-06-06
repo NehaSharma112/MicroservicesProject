@@ -1,6 +1,7 @@
 package com.ticket_management_system.central_api.Controller;
 
 import com.ticket_management_system.central_api.Exception.WrongCredentials;
+import com.ticket_management_system.central_api.Model.Employee;
 import com.ticket_management_system.central_api.Service.EmpService;
 import com.ticket_management_system.central_api.dto.Request.EmployeeReq;
 import com.ticket_management_system.central_api.dto.Request.InviteEmployeeDto;
@@ -43,8 +44,15 @@ public class EmployeeController {
         }
     }
 
+    @PostMapping("/invite")
     public ResponseEntity inviteEmp(@RequestBody InviteEmployeeDto inviteEmployeeDto,
                                     @RequestHeader String Authorization){
         empService.inviteEmployee(inviteEmployeeDto, Authorization);
+    }
+
+    @GetMapping("/invite/accept/{toke}")
+    public ResponseEntity acceptInvite(@PathVariable String token){
+        Employee employee = empService.acceptInvite(token);
+        return new ResponseEntity(employee,HttpStatus.ACCEPTED);
     }
 }

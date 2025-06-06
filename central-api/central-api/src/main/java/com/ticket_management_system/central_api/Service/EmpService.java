@@ -8,7 +8,9 @@ import com.ticket_management_system.central_api.Exception.UserNotFoundException;
 import com.ticket_management_system.central_api.Exception.WrongCredentials;
 import com.ticket_management_system.central_api.Middleware.AuthApiConnector;
 import com.ticket_management_system.central_api.Middleware.DbApiIntegration;
+import com.ticket_management_system.central_api.Middleware.NotifyApiConnector;
 import com.ticket_management_system.central_api.Model.Employee;
+import com.ticket_management_system.central_api.Model.Enum.EmployeeStatus;
 import com.ticket_management_system.central_api.Model.Organization;
 import com.ticket_management_system.central_api.Model.Roles;
 import com.ticket_management_system.central_api.dto.Request.*;
@@ -29,6 +31,9 @@ public class EmpService {
     DbApiIntegration dbApiIntegration;
 
     @Autowired
+    NotifyApiConnector notifyApiConnector;
+
+    @Autowired
     RoleService roleService;
 
     @Autowired
@@ -36,6 +41,9 @@ public class EmpService {
 
     @Autowired
     AuthApiConnector authApiConnector;
+
+    @Autowired
+    AuthService authService;
 
     public EmployeeResp createEmp(EmployeeReq employeeReq){
         List<String> rolenames = employeeReq.getRoles();
@@ -82,7 +90,7 @@ public class EmpService {
         throw new WrongCredentials("Wrong password entered");
     }
 
-    public void inviteEmployee(InviteEmployeeDto inviteEmployeeDto, String Authorization) {
+    public Employee inviteEmployee(InviteEmployeeDto inviteEmployeeDto, String Authorization) {
 
         boolean authResp = authService.checkAccessAvailable(Authorization,"INVITE_EMPLOYEE");
         if(authResp==false){
@@ -93,8 +101,17 @@ public class EmpService {
         Organization org = orgService.getOrgById(orgId);
         Roles role = roleService.getRoleById(roleId);
         Employee employee = mapInviteEmployeeDetailsToEmployee(org,role,inviteEmployeeDto);
-        Employee employee2 = this.saveEmployeeToDB(employee);
-        String token = authApiConnector.callGetJwtTokenEndpoint(EmployeeConverter.employeeDetailsToUserDetailsDto(employee2,orgId,role));
+        Employee savedEmployee = this.saveEmployeeToDB(employee);
+        String token = authApiConnector.callGetJwtTokenEndpoint(EmployeeConverter.employeeDetailsToUserDetailsDto(savedEmployee,orgId,role));
+        notifyApiConnector.notifyEmployeeForInvitation(savedEmployee);
+        return savedEmployee;
+    }
 
+    public Employee acceptInvite(String token) {
+        String email = authService.getEmailFromJwtToken(token);
+        Employee employee = dbApiIntegration.getEmployeeByMail(email);
+        employee.setStatus(EmployeeStatus.ACTIVE);
+        Employee savedEmployee = dbApiIntegration.callSaveEmployeeEndpoint(employee);
+        return savedEmployee;
     }
 }
