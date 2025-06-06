@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 public class EmpService {
     @Autowired
     EmailService emailService;
-    public void notifyEmployee(Employee employee) {
+
+
+    public void notifyEmployeeForInvitation(Employee employee) {
         String to = employee.getEmail();
         String subject = "You're invited to join "+employee.getOrganization().getName();
         emailService.sendHtmlEmail(to,subject,html);
-
     }
 }

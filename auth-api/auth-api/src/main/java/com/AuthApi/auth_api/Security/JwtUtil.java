@@ -4,8 +4,8 @@ import com.AuthApi.auth_api.Connector.DBAPI;
 import com.AuthApi.auth_api.Models.Employee;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

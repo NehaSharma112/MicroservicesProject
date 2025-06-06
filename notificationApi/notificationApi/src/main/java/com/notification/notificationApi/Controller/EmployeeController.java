@@ -13,7 +13,7 @@ public class EmployeeController {
     @Autowired
     EmpService empService;
 
-    public void notifyEmployee(Employee employee){
-        empService.notifyEmployee(employee);
+    public void notifyEmployeeForInvitation(Employee employee){
+        empService.notifyEmployeeForInvitation(employee);
     }
 }
