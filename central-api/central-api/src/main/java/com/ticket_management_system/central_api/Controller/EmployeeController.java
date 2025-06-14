@@ -44,13 +44,15 @@ public class EmployeeController {
         }
     }
 
+
     @PostMapping("/invite")
     public ResponseEntity inviteEmp(@RequestBody InviteEmployeeDto inviteEmployeeDto,
                                     @RequestHeader String Authorization){
-        empService.inviteEmployee(inviteEmployeeDto, Authorization);
+        Employee employee = empService.inviteEmployee(inviteEmployeeDto, Authorization);
+        return new ResponseEntity(employee,HttpStatus.CREATED);
     }
 
-    @GetMapping("/invite/accept/{toke}")
+    @GetMapping("/invite/accept/{token}")
     public ResponseEntity acceptInvite(@PathVariable String token){
         Employee employee = empService.acceptInvite(token);
         return new ResponseEntity(employee,HttpStatus.ACCEPTED);

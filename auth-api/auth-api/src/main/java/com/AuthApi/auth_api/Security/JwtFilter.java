@@ -28,7 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String
+            String credentials = jwtUtil.decryptToken(token);
         }
     }
 }

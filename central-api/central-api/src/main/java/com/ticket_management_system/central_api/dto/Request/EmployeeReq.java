@@ -2,6 +2,7 @@ package com.ticket_management_system.central_api.dto.Request;
 
 import com.ticket_management_system.central_api.Model.Organization;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class EmployeeReq {
 

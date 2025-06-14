@@ -16,6 +16,7 @@ public class securityConfiguration {
     JwtFilter jwtFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//        httpSecurity.csrf().disable().authorizeHttpRequests()
         return httpSecurity.csrf().disable()
                 .authorizeHttpRequests(auth->auth.requestMatchers("/api/v1/auth/token/get").permitAll()
                     .anyRequest().authenticated()

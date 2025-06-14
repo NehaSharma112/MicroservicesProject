@@ -34,7 +34,7 @@ public class JwtUtil {
         String credentials = Jwts.parser().setSigningKey(secretPassword)
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject();
+                .getSubject();//we are taking body of the token and then subject of it which actually contains credentials
         return credentials;
     }
 
@@ -42,7 +42,7 @@ public class JwtUtil {
         String credentials = this.decryptToken(token);
         String email = credentials.split(":")[0];
         String password = credentials.split(":")[1];
-        Employee emp =  dbapi.getEmpByEmail(email);
+        Employee emp =  dbapi.callGetEmpByEmail(email);
         if(emp==null){
             return false;
         }

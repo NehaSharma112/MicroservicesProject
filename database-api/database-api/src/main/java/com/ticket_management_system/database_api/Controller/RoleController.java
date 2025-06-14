@@ -5,10 +5,7 @@ import com.ticket_management_system.database_api.Repository.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/db/roles")
@@ -29,6 +26,25 @@ public class RoleController {
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity saveRole(@RequestBody Role role){
+        roleRepo.save(role);
+        return new ResponseEntity(role, HttpStatus.OK);
+    }
+
+    @GetMapping("/{orgId}/{roleName}")
+    public ResponseEntity getRoleByOrgId(@PathVariable int orgId,
+                                         @PathVariable String roleName){
+        Role role = roleRepo.getRoleByOrgIdAndRoleName(orgId, roleName);
+        return new ResponseEntity(role, HttpStatus.OK);
+    }
+
+    @GetMapping("/{roleId}")
+    public ResponseEntity getRoleById(@PathVariable int roleId){
+        Role role = roleRepo.findById(roleId).orElse(null);
+        return new ResponseEntity(role, HttpStatus.OK);
     }
 
 
